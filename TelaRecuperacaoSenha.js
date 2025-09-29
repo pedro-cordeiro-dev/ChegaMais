@@ -50,15 +50,15 @@ export default function TelaRecuperacaoSenha({ navigation }) {
       >
         {/* Botão de voltar */}
         <TouchableOpacity 
-          style={styles.backButton} 
+          style={styles.botaoVoltar} 
           onPress={() => navigation.goBack()}
         >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={styles.title}>Chega+</Text>
-        <Text style={styles.subtitle}>Esqueceu sua senha?</Text>
-        <Text style={styles.description}>
+        <Text style={styles.titulo}>Chega+</Text>
+        <Text style={styles.subtitulo}>Esqueceu sua senha?</Text>
+        <Text style={styles.descricao}>
           Digite seu email para receber instruções de como redefinir sua senha
         </Text>
 
@@ -75,21 +75,21 @@ export default function TelaRecuperacaoSenha({ navigation }) {
 
         <TouchableOpacity 
           style={[
-            styles.loginButton,
-            loading && styles.loginButtonDisabled
+            styles.botaoLogin,
+            loading && styles.botaoLoginDesabilitado
           ]} 
           onPress={handleRecuperacaoSenha}
           disabled={loading}
         >
-          <Text style={styles.loginButtonText}>
+          <Text style={styles.textoBotaoLogin}>
             {loading ? 'Enviando...' : 'Enviar Email'}
           </Text>
         </TouchableOpacity>
 
-        <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>Lembrou da senha?</Text>
+        <View style={styles.containerRegistro}>
+          <Text style={styles.textoRegistro}>Lembrou da senha?</Text>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.registerLink}>Faça login</Text>
+            <Text style={styles.linkRegistro}>Faça login</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>

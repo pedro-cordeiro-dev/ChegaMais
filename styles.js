@@ -1,27 +1,30 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
+
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
   },
-  title: {
+
+  titulo: {
     fontSize: 36,
     fontWeight: "bold",
     color: "white",
     marginBottom: 10,
     textAlign: "center",
   },
-  subtitle: {
+
+  subtitulo: {
     fontSize: 14,
     color: "white",
     marginBottom: 20,
     textAlign: "center",
   },
-  // NOVO: Descrição para tela de recuperação de senha
-  description: {
+
+  descricao: {
     fontSize: 14,
     color: "#CCC",
     marginBottom: 30,
@@ -29,42 +32,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     lineHeight: 20,
   },
+
   input: {
     width: '90%',
     height: 50,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 25,
     paddingHorizontal: 20,
     fontSize: 16,
-    color: '#fff', 
+    color: '#fff',
     marginBottom: 15,
   },
-  loginButton: { 
+
+  botaoLogin: {
     width: '90%',
     height: 50,
-    backgroundColor: '#751a65', 
+    backgroundColor: '#751a65',
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20, 
+    marginTop: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 8,
   },
-  // NOVO: Estilo para botão desabilitado
-  loginButtonDisabled: {
+
+  botaoLoginDesabilitado: {
     backgroundColor: '#555',
   },
-  loginButtonText: {
+
+  textoBotaoLogin: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
 
-  // NOVO ESTILO: Botão de voltar
-  backButton: {
+  botaoVoltar: {
     position: 'absolute',
     top: 50,
     left: 20,
@@ -72,30 +77,33 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 
-  // Container para o botão Esqueci Senha
-  forgotPasswordButton: {
+  botaoEsqueceuSenha: {
     marginTop: 10,
   },
-  forgotPasswordText: {
+
+  textoEsqueceuSenha: {
     color: "white",
     fontSize: 14,
     textDecorationLine: "underline",
   },
-  registerContainer: {
+
+  containerRegistro: {
     flexDirection: 'row',
     marginTop: 20,
   },
-  registerText: {
+
+  textoRegistro: {
     color: '#CCC',
     fontSize: 14,
   },
-  registerLink: {
+
+  linkRegistro: {
     color: '#00BFFF',
     fontSize: 14,
     fontWeight: 'bold',
-    textDecorationLine: 'underline', 
+    textDecorationLine: 'underline',
     marginLeft: 5,
   },
 });
 
-export default styles;
+export default estilos;

@@ -20,8 +20,8 @@ export default function TelaLogin({ navigation }) {
       colors={['#0f0c29', '#302b63', '#24243e']} 
       style={styles.container}
     >
-      <Text style={styles.title}>Chega+</Text>
-      <Text style={styles.subtitle}>Login para continuar</Text>
+      <Text style={styles.titulo}>Chega+</Text>
+      <Text style={styles.subtitulo}>Login para continuar</Text>
 
       <TextInput
         style={styles.input}
@@ -41,21 +41,21 @@ export default function TelaLogin({ navigation }) {
         onChangeText={setSenha}
       />
 
-      <TouchableOpacity style={styles.loginButton} onPress={lidarComLogin}>
-        <Text style={styles.loginButtonText}>Login</Text>
+      <TouchableOpacity style={styles.botaoLogin} onPress={lidarComLogin}>
+        <Text style={styles.textoBotaoLogin}>Login</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
         onPress={() => navigation.navigate('TelaRecuperacaoSenha')}
-        style={styles.forgotPasswordButton} 
+        style={styles.botaoEsqueceuSenha} 
       >
-        <Text style={styles.forgotPasswordText}>Esqueci minha senha</Text>
+        <Text style={styles.textoEsqueceuSenha}>Esqueci minha senha</Text>
       </TouchableOpacity>
 
-      <View style={styles.registerContainer}>
-        <Text style={styles.registerText}>Não tem conta?</Text>
+      <View style={styles.containerRegistro}>
+        <Text style={styles.textoRegistro}>Não tem conta?</Text>
         <TouchableOpacity onPress={() => navigation.navigate('TelaCadastro')}>
-          <Text style={styles.registerLink}>Cadastre-se</Text>
+          <Text style={styles.linkRegistro}>Cadastre-se</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
