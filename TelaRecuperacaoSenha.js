@@ -48,7 +48,7 @@ export default function TelaRecuperacaoSenha({ navigation }) {
         colors={['#0f0c29', '#302b63', '#24243e']} 
         style={styles.container}
       >
-        {/* Botão de voltar */}
+        
         <TouchableOpacity 
           style={styles.botaoVoltar} 
           onPress={() => navigation.goBack()}
