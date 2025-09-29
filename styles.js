@@ -20,6 +20,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
+  // NOVO: Descrição para tela de recuperação de senha
+  description: {
+    fontSize: 14,
+    color: "#CCC",
+    marginBottom: 30,
+    textAlign: "center",
+    paddingHorizontal: 20,
+    lineHeight: 20,
+  },
   input: {
     width: '90%',
     height: 50,
@@ -44,13 +53,26 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 8,
   },
+  // NOVO: Estilo para botão desabilitado
+  loginButtonDisabled: {
+    backgroundColor: '#555',
+  },
   loginButtonText: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  
-  // NOVO ESTILO: Container para o botão Esqueci Senha
+
+  // NOVO ESTILO: Botão de voltar
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 1,
+    padding: 10,
+  },
+
+  // Container para o botão Esqueci Senha
   forgotPasswordButton: {
     marginTop: 10,
   },
