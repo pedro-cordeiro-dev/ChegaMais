@@ -7,7 +7,6 @@ export default function TelaLogin({ navigation }) {
   const [eMail, setEMail] = useState('');
   const [senha, setSenha] = useState('');
 
-
   const lidarComLogin = () => {
     if (eMail.trim() && senha.trim()) {
       alert('Login realizado com sucesso! (Em breve, navegação real)');
@@ -42,20 +41,17 @@ export default function TelaLogin({ navigation }) {
         onChangeText={setSenha}
       />
 
-
       <TouchableOpacity style={styles.loginButton} onPress={lidarComLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
 
-      {/* Link de Esqueci Senha */}
       <TouchableOpacity 
         onPress={() => navigation.navigate('TelaRecuperacaoSenha')}
-        style={{ marginTop: 10 }}
+        style={styles.forgotPasswordButton} 
       >
         <Text style={styles.forgotPasswordText}>Esqueci minha senha</Text>
       </TouchableOpacity>
-      
-      {/* Seção de Cadastro */}
+
       <View style={styles.registerContainer}>
         <Text style={styles.registerText}>Não tem conta?</Text>
         <TouchableOpacity onPress={() => navigation.navigate('TelaCadastro')}>

@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   loginButton: { 
     width: '90%',
     height: 50,
-    backgroundColor: '#8A2BE2', 
+    backgroundColor: '#751a65', 
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
@@ -49,11 +49,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  
+  // NOVO ESTILO: Container para o botão Esqueci Senha
+  forgotPasswordButton: {
+    marginTop: 10,
+  },
   forgotPasswordText: {
     color: "white",
     fontSize: 14,
     textDecorationLine: "underline",
-    marginTop: 10,
   },
   registerContainer: {
     flexDirection: 'row',
