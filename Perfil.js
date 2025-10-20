@@ -110,7 +110,7 @@ export default function TelaPerfil({ navigation }) {
           <MenuItem
             icon="key-outline"
             title="Mudar a senha"
-            onPress={() => handleMenuPress('Senha')}
+            onPress={() => navigation.navigate('TelaMudarSenha')}
           />
         </View>
 

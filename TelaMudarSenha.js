@@ -11,7 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from './firebaseconfig';
-import styles from './styles'; arquivo
+import styles from './styles'; 
 
 export default function TelaAlterarSenha({ navigation }) {
   const [novaSenha, setNovaSenha] = useState('');

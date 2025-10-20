@@ -59,6 +59,20 @@ export default function TelaCadastro({ navigation }) {
 
       <TextInput
         style={styles.input}
+        placeholder="CPF"
+        placeholderTextColor="#888"
+        value={cpf}
+        onChangeText={(text) => {
+          const numeros = text.replace(/[^0-9]/g, "");
+          if (numeros.length <= 11) {
+            setCpf(numeros);
+          }
+        }}
+        keyboardType="numeric"
+      />
+
+      <TextInput
+        style={styles.input}
         placeholder="Nome"
         placeholderTextColor="#888"
         value={nome}
@@ -88,19 +102,7 @@ export default function TelaCadastro({ navigation }) {
         onChangeText={setConfirmPassword}
         secureTextEntry={true}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="CPF"
-        placeholderTextColor="#888"
-        value={cpf}
-        onChangeText={(text) => {
-          const numeros = text.replace(/[^0-9]/g, "");
-          if (numeros.length <= 11) {
-            setCpf(numeros);
-          }
-        }}
-        keyboardType="numeric"
-      />
+
 
       <TouchableOpacity style={styles.botaoLogin} onPress={AuthCadastro}>
         <Text style={styles.textoBotaoLogin}>Enviar</Text>
