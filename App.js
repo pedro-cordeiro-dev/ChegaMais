@@ -6,6 +6,7 @@ import TelaCadastro from './TelaCadastro';
 import TelaLogin from './TelaLogin';  
 import TelaRecuperacaoSenha from './TelaRecuperacaoSenha';
 import TelaAvaliacoes from './TelaAvaliacoes'; 
+import TelaHome from './TelaHome';
 
 const Stack = createStackNavigator();
 

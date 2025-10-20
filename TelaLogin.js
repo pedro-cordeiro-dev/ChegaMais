@@ -1,17 +1,45 @@
 import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native'; 
 import { LinearGradient } from 'expo-linear-gradient';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from './firebaseconfig';
 import styles from './styles'; 
 
 export default function TelaLogin({ navigation }) {
+
   const [eMail, setEMail] = useState('');
   const [senha, setSenha] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const lidarComLogin = () => {
-    if (eMail.trim() && senha.trim()) {
-      alert('Login realizado com sucesso! (Em breve, navegação real)');
-    } else {
-      alert('Preencha todos os campos para continuar.');
+  const lidarComLogin = async () => {
+
+    if (!eMail.trim() || !senha.trim()) {
+      Alert.alert('Atenção', 'Preencha todos os campos para continuar.');
+      return;
+    }
+
+    if (loading) return;
+    setLoading(true);
+
+    try {
+
+      await signInWithEmailAndPassword(auth, eMail, senha);
+      navigation.navigate('TelaHome'); 
+
+    } catch (error) {
+      console.error("Erro no login:", error.code);
+      let mensagemErro = 'Ocorreu um erro ao tentar fazer login.';
+
+      if (error.code === 'auth/invalid-credential' || 
+          error.code === 'auth/user-not-found' || 
+          error.code === 'auth/wrong-password') {
+        mensagemErro = 'Email ou senha inválidos.';
+      }
+      
+      Alert.alert('Erro', mensagemErro);
+
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -41,8 +69,16 @@ export default function TelaLogin({ navigation }) {
         onChangeText={setSenha}
       />
 
-      <TouchableOpacity style={styles.botaoLogin} onPress={lidarComLogin}>
-        <Text style={styles.textoBotaoLogin}>Login</Text>
+      <TouchableOpacity 
+        style={styles.botaoLogin} 
+        onPress={lidarComLogin} 
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#FFF" />
+        ) : (
+          <Text style={styles.textoBotaoLogin}>Login</Text>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity 
