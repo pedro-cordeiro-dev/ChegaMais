@@ -1,0 +1,202 @@
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width } = Dimensions.get('window');
+
+const stylesHome = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  container: {
+    flex: 1,
+  },
+  headerBackground: {
+    paddingBottom: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+  },
+  perfilContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  perfilImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  logoTexto: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '300',
+  },
+  userName: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  notificacaoIcon: {
+    padding: 5,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  pesquisaBar: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    marginHorizontal: 15,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  pesquisaInput: {
+    marginLeft: 10,
+    flex: 1,
+    fontSize: 16,
+    color: '#751a65',
+  },
+  categoriasList: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  categoriaItem: {
+    width: 80, 
+    height: 90,
+    backgroundColor: '#EBEBEB',
+    borderRadius: 10,
+    marginHorizontal: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
+  categoriaItemSelected: {
+    backgroundColor: '#4B0082', 
+  },
+  iconeContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  categoriaTexto: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#4B0082',
+    textAlign: 'center',
+  },
+  categoriaTextoSelected: {
+    color: '#FFFFFF',
+  },
+  sessaoRecomendados: {
+    marginTop: 20,
+    paddingHorizontal: 15,
+  },
+  sessaoRecomendadosTitulo: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 10,
+  },
+  horizontalListContent: {
+    paddingRight: 15,
+  },
+  cardRecomendado: {
+    width: width * 0.75,
+    height: 180,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginRight: 15,
+    backgroundColor: '#4B0082',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  cardRecomendadoImagem: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  cardRecomendadoOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', 
+    padding: 10,
+  },
+  cardRecomendadoNome: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cardRecomendadoLocal: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    marginLeft: 4,
+  },
+  cardAvaliado: {
+    width: width * 0.4, 
+    height: 150,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginRight: 15,
+    backgroundColor: '#BA55D3',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+  },
+  cardAvaliadoImagem: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  cardAvaliadoOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(75, 0, 130, 0.7)', 
+    padding: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardAvaliadoNome: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  botaoNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+    backgroundColor: '#FFFFFF',
+  },
+  navItem: {
+    alignItems: 'center',
+    padding: 5,
+  },
+  navText: {
+    fontSize: 12,
+    color: '#A9A9A9',
+  },
+});
+export default stylesHome;
