@@ -222,6 +222,73 @@ const estilos = StyleSheet.create({
     color: '#888',
     marginTop: 32,
   },
+
+    senha_container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+
+  senha_cabecalho: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 50,
+    paddingBottom: 15,
+    paddingHorizontal: 16,
+  },
+
+  senha_botaoCabecalho: {
+    padding: 8,
+  },
+
+  senha_tituloCabecalho: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+
+  senha_conteudo: {
+    padding: 20,
+  },
+
+  senha_rotuloCampo: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: 6,
+    marginTop: 16,
+  },
+
+  senha_input: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#111827',
+  },
+ 
+  senha_botao: {
+    backgroundColor: '#751a65',
+    marginTop: 30,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  senha_textoBotao: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
+  },
   
 });
 
