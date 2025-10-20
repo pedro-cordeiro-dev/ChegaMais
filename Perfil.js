@@ -1,103 +1,150 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import styles from './stylesPerfil'; // importa os estilos
+import { auth, db } from './firebaseconfig'; 
+import { doc, getDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
-import MenuItem from './MenuItemPerfil'; // componente de item de menu
+import styles from './stylesPerfil';
+import MenuItem from './MenuItemPerfil';
 
-export default function Perfil() {
-  const handleMenuPress = (item) => {
-    console.log('Pressed:', item);
+export default function TelaPerfil({ navigation }) {
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            setUserData(userDocSnap.data()); 
+          } else {
+            console.log("Documento do usuário não encontrado!");
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados do usuário:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace('TelaLogin'); 
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+      Alert.alert("Erro", "Não foi possível sair. Tente novamente.");
+    }
   };
 
-  return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+  const handleMenuPress = (item) => {
+    console.log('Pressed:', item);
+  };
 
-      <LinearGradient
-        colors={['#2E1A47', '#4A5568']}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <TouchableOpacity style={styles.headerButton}>
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Perfil</Text>
-        <TouchableOpacity style={styles.headerButton}>
-          <Ionicons name="copy-outline" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </LinearGradient>
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
 
-      <ScrollView style={styles.content}>
-        <View style={styles.profileSection}>
-          <View style={styles.profileImageContainer}>
-            <Image
-              source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
-              style={styles.profileImage}
-            />
-            <TouchableOpacity style={styles.editButton}>
-              <Ionicons name="pencil" size={16} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.profileName}>Isabela Silva</Text>
-          <Text style={styles.profileEmail}>isabelasilva@gmail.com</Text>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>Geral</Text>
-          </View>
-        </View>
+      <LinearGradient
+        colors={['#2E1A47', '#4A5568']}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Perfil</Text>
+        <TouchableOpacity style={styles.headerButton}>
+          <Ionicons name="copy-outline" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+      </LinearGradient>
 
-        <View style={styles.menuSection}>
-          <MenuItem
-            icon="star-outline"
-            title="Avaliações feitas"
-            subtitle="Avaliações e Comentários"
-            onPress={() => handleMenuPress('Avaliações')}
-          />
-          <MenuItem
-            icon="key-outline"
-            title="Mudar a senha"
-            onPress={() => handleMenuPress('Senha')}
-          />
-          <MenuItem
-            icon="time-outline"
-            title="Histórico de visitas"
-            onPress={() => handleMenuPress('Histórico')}
-          />
-        </View>
+      <ScrollView style={styles.content}>
+        <View style={styles.profileSection}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
+              style={styles.profileImage}
+            />
+            <TouchableOpacity style={styles.editButton}>
+              <Ionicons name="pencil" size={16} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+          
+          <Text style={styles.profileName}>
+            {userData ? userData.nome : 'Carregando...'}
+          </Text>
+          <Text style={styles.profileEmail}>
+            {userData ? userData.email : '...'}
+          </Text>
 
-        <Text style={styles.sectionHeader}>Informação</Text>
-        <View style={styles.menuSection}>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>Geral</Text>
+          </View>
+        </View>
+
+        <View style={styles.menuSection}>
+          <MenuItem
+            icon="star-outline"
+            title="Avaliações feitas"
+            subtitle="Avaliações e Comentários"
+            onPress={() => navigation.navigate('TelaAvaliacoes')}
+          />
+          <MenuItem
+            icon="key-outline"
+            title="Mudar a senha"
+            onPress={() => handleMenuPress('Senha')}
+          />
+        </View>
+
+        <Text style={styles.sectionHeader}>Informação</Text>
+        
+        <View style={styles.menuSection}>
+          <MenuItem
+            icon="phone-portrait-outline"
+            title="Sobre o app"
+            onPress={() => handleMenuPress('Sobre')}
+          />
+          <MenuItem
+            icon="document-text-outline"
+            title="Termos & Condições"
+            onPress={() => handleMenuPress('Termos')}
+          />
+          <MenuItem
+            icon="shield-checkmark-outline"
+            title="Política de privacidade"
+            onPress={() => handleMenuPress('Privacidade')}
+          />
+          <MenuItem
+            icon="share-social-outline"
+            title="Compartilhe esse app"
+            onPress={() => handleMenuPress('Compartilhar')}
+          />
+
           <MenuItem
-            icon="phone-portrait-outline"
-            title="Sobre o app"
-            onPress={() => handleMenuPress('Sobre')}
+            icon="log-out-outline"
+            title="Sair"
+            onPress={handleLogout}
           />
-          <MenuItem
-            icon="document-text-outline"
-            title="Termos & Condições"
-            onPress={() => handleMenuPress('Termos')}
-          />
-          <MenuItem
-            icon="shield-checkmark-outline"
-            title="Política de privacidade"
-            onPress={() => handleMenuPress('Privacidade')}
-          />
-          <MenuItem
-            icon="share-social-outline"
-            title="Compartilhe esse app"
-            onPress={() => handleMenuPress('Compartilhar')}
-          />
-        </View>
-      </ScrollView>
-    </View>
-  );
+        </View>
+      </ScrollView>
+    </View>
+  );
 }

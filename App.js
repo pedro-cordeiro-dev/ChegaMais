@@ -7,6 +7,7 @@ import TelaLogin from './TelaLogin';  
 import TelaRecuperacaoSenha from './TelaRecuperacaoSenha';
 import TelaAvaliacoes from './TelaAvaliacoes'; 
 import TelaHome from './TelaHome';
+import TelaPerfil from './Perfil';
 
 const Stack = createStackNavigator();
 
@@ -44,6 +45,12 @@ export default function App() {
           component={TelaHome}
           options={{ headerShown: false }} 
         />
+
+        <Stack.Screen
+          name="Perfil"
+          component={TelaPerfil}
+          options={{ headerShown: false }} 
+        />
 
         </Stack.Navigator>
     </NavigationContainer>

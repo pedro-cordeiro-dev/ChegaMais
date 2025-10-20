@@ -190,7 +190,7 @@ export default function TelaHome({ navigation }) {
           <Text style={stylesHome.navText}>Cadastrar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={stylesHome.navItem} onPress={() => {/* Adicionar tela, ex: navigation.navigate('TelaPerfil') */}}>
+        <TouchableOpacity style={stylesHome.navItem} onPress={() => {navigation.navigate('Perfil')}}>
           <MaterialIcons name="person" size={24} color="#A9A9A9" />
           <Text style={stylesHome.navText}>Perfil</Text>
         </TouchableOpacity>
