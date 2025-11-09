@@ -93,12 +93,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  daysContainer: {
+  diasContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 15,
   },
-  dayButton: {
+  diaButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -106,15 +106,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayButtonSelected: {
+  diaButtonSelected: {
     backgroundColor: '#09091A',
   },
-  dayText: {
+  diaText: {
     color: '#555',
     fontWeight: 'bold',
     fontSize: 16,
   },
-  dayTextSelected: {
+  diaSelecionado: {
     color: '#FFFFFF',
   },
   submitButton: {

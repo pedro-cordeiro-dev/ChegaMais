@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import {
   View,Text,TextInput,TouchableOpacity,ScrollView,KeyboardAvoidingView,Platform,StatusBar, 
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context'; // Importado
+import { SafeAreaView } from 'react-native-safe-area-context'; 
 import { Picker } from '@react-native-picker/picker';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'; // Importado
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'; 
 import { LinearGradient } from 'expo-linear-gradient';
-import styles from './stylesCadastrar'; // O nome do estilo permanece o mesmo
+import styles from './stylesCadastrar'; 
 
 const TelaCadastrar = ({ navigation }) => { 
   const [nome, setNome] = useState('');
@@ -132,22 +132,22 @@ const TelaCadastrar = ({ navigation }) => {
               />
             </View>
 
-            <View style={styles.daysContainer}>
+            <View style={styles.diasContainer}>
               {diasDaSemana.map((dia, index) => {
                 const isSelected = diasSelecionados.includes(index);
                 return (
                   <TouchableOpacity
                     key={index}
                     style={[
-                      styles.dayButton,
-                      isSelected && styles.dayButtonSelected,
+                      styles.diaButton,
+                      isSelected && styles.diaButtonSelected,
                     ]}
                     onPress={() => toggleDia(index)}
                   >
                     <Text
                       style={[
-                        styles.dayText,
-                        isSelected && styles.dayTextSelected,
+                        styles.diaText,
+                        isSelected && styles.diaSelecionado,
                       ]}
                     >
                       {dia}

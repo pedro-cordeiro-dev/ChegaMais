@@ -240,7 +240,7 @@ export default function TelaHome({ navigation }) {
           <Text style={stylesHome.navText}>Explorar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={stylesHome.navItem} onPress={() => {/* Adicionar tela, ex: navigation.navigate('TelaCadastrar') */ }}>
+       <TouchableOpacity style={stylesHome.navItem} onPress={() => navigation.navigate('TelaCadastrar')}>
           <MaterialIcons name="add-circle-outline" size={24} color="#A9A9A9" />
           <Text style={stylesHome.navText}>Cadastrar</Text>
         </TouchableOpacity>
