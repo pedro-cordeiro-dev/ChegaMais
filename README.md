@@ -130,6 +130,3 @@ npx expo start
 
 ---
 
-🧩 **Autor:** Seu Nome  
-📱 **Projeto:** Chega+  
-📦 **Licença:** MIT (ou outra, se preferir)
