@@ -11,6 +11,7 @@ import TelaPerfil from './Perfil';
 import TelaMudarSenha from './TelaMudarSenha';
 import TelaCadastrar from './TelaCadastrar';
 import TelaExplorar from './TelaExplorar';
+import TelaMeusLazeres from './TelaMeusLazeres';
 
 
 const Stack = createStackNavigator();
@@ -51,10 +52,10 @@ export default function App() {
         />
 
         <Stack.Screen
-          name="Perfil"
-          component={TelaPerfil}
-          options={{ headerShown: false }} 
-        />
+          name="Perfil"
+          component={TelaPerfil}
+          options={{ headerShown: false }} 
+        />
 
       <Stack.Screen
           name="TelaMudarSenha" 
@@ -71,6 +72,12 @@ export default function App() {
         <Stack.Screen
           name="TelaExplorar" 
           component={TelaExplorar}
+          options={{ headerShown: false }} 
+        />
+
+        <Stack.Screen
+          name="TelaMeusLazeres" 
+          component={TelaMeusLazeres}
           options={{ headerShown: false }} 
         />
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text, View, TextInput, Image, TouchableOpacity, FlatList,
   Dimensions, Linking, Modal, ActivityIndicator, ScrollView
@@ -15,6 +15,7 @@ import stylesHome from './stylesHome';
 import styles from './StylesExplorar';
 
 const { width } = Dimensions.get('window');
+const ITEM_WIDTH = width * 0.85 + 20; 
 
 const LazerCard = ({ item }) => {
   
@@ -124,10 +125,11 @@ const LazerCard = ({ item }) => {
       const userData = userDocSnap.exists() ? userDocSnap.data() : {};
 
       const reviewData = {
+        lazerName: item.nome,
         rating: reviewRating,
         comment: reviewComment,
         userName: userData.nome || 'Usuário Anônimo',
-        userPhoto: userData.photoURL || null,
+        userPhoto: userData.photoURL || null, 
         userId: user.uid,
         createdAt: serverTimestamp(),
       };
@@ -218,7 +220,7 @@ const LazerCard = ({ item }) => {
             reviews.map(review => (
               <View key={review.id} style={styles.commentItem}>
                 <Image
-                  source={review.userPhoto ? { uri: review.userPhoto } : require('./assets/iconUsuario.png')}
+                  source={review.userPhoto ? { uri: review.userPhoto } : require('./assets/iconUsuario.png')} 
                   style={styles.commentUserImage}
                 />
                 <View style={{ flex: 1 }}>
@@ -272,12 +274,13 @@ const LazerCard = ({ item }) => {
   );
 };
 
-
-export default function TelaExplorar({ navigation }) {
+export default function TelaExplorar({ navigation, route }) { 
   
   const [lazerData, setLazerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
+  
+  const flatListRef = useRef(null);
 
   useEffect(() => {
     const fetchLazerData = async () => {
@@ -297,8 +300,25 @@ export default function TelaExplorar({ navigation }) {
     fetchLazerData();
   }, []);
 
+  useEffect(() => {
+    const { lazerId } = route.params || {};
+    
+    if (lazerId && lazerData.length > 0) {
+      const index = lazerData.findIndex(item => item.id === lazerId);
+      
+      if (index > -1) {
+        flatListRef.current?.scrollToIndex({
+          animated: true,
+          index: index,
+          viewPosition: 0.5,
+        });
+      }
+    }
+  }, [route.params, lazerData]);
+
+
   const filteredData = lazerData.filter(item => 
-    item.nome.toLowerCase().includes(searchText.toLowerCase())
+    (item.nome || '').toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
@@ -316,30 +336,39 @@ export default function TelaExplorar({ navigation }) {
               onChangeText={setSearchText}
             />
           </View>
-          <TouchableOpacity 
-            style={styles.addButton}
-            onPress={() => navigation.navigate('TelaCadastrar')}
-          >
-            <Ionicons name="add-circle" size={32} color="#4B0082" />
-          </TouchableOpacity>
+          
         </View>
 
         {loading ? (
           <ActivityIndicator size="large" color="#4B0082" style={{ flex: 1 }} />
         ) : (
           <FlatList
+            ref={flatListRef}
             data={filteredData}
             renderItem={({ item }) => <LazerCard item={item} />}
             keyExtractor={item => item.id}
             horizontal
             showsHorizontalScrollIndicator={false}
-            snapToInterval={width * 0.85 + 20}
+            snapToInterval={ITEM_WIDTH}
             decelerationRate="fast"
+            getItemLayout={(data, index) => ({ 
+              length: ITEM_WIDTH, 
+              offset: ITEM_WIDTH * index, 
+              index 
+            })}
             contentContainerStyle={{
               paddingHorizontal: (width - (width * 0.85)) / 2,
               paddingVertical: 20,
             }}
-            ListEmptyComponent={<Text style={{ padding: 20 }}>Nenhum local encontrado.</Text>}
+            ListEmptyComponent={
+              <View style={styles.emptyListContainer}>
+                <Text style={styles.emptyListText}>
+                  {searchText
+                    ? `Nenhum local encontrado para "${searchText}"`
+                    : 'Nenhum local cadastrado.'}
+                </Text>
+              </View>
+            }
           />
         )}
       </View>
