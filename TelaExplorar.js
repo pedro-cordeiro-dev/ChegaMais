@@ -23,10 +23,8 @@ export default function TelaHome({ navigation }) {
   return (
     <SafeAreaView style={stylesHome.container}>
 
-      {/* Fundo Roxo */}
       <View style={stylesHome.fundoRoxo} />
 
-      {/* Barra de Pesquisa */}
       <View style={stylesHome.searchBox}>
         <MaterialIcons name="search" size={24} color="#FFF" />
         <TextInput
@@ -36,7 +34,6 @@ export default function TelaHome({ navigation }) {
         />
       </View>
 
-      {/* Carrossel */}
       <View style={stylesHome.carouselWrapper}>
         <Carousel
           width={320}
