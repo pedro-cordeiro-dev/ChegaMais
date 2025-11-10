@@ -290,6 +290,47 @@ const estilos = StyleSheet.create({
     fontWeight: '600',
   },
   
+  // ... (mantenha todos os seus estilos existentes)
+
+// ADICIONE ESTES NOVOS ESTILOS NO FINAL DO SEU StyleSheet.create({ ... })
+
+  inputContainerRow: {
+    flexDirection: 'row',
+    width: '90%',
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+
+  inputRow: {
+    flex: 1, // Faz o input ocupar o espaço disponível
+    height: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderTopLeftRadius: 25,
+    borderBottomLeftRadius: 25,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: '#fff',
+  },
+
+  buttonRow: {
+    height: 50,
+    backgroundColor: '#751a65', // Cor do seu 'botaoLogin'
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+
+  buttonRowText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  
+  buttonRowDisabled: {
+    backgroundColor: '#555',
+  }
 });
 
 export default estilos;

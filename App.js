@@ -67,12 +67,6 @@ export default function App() {
           options={{ headerShown: false }} 
         />
 
-        <Stack.Screen
-          name="TelaEsqueciSenha" 
-          component={TelaEsqueciSenha}
-          options={{ headerShown: false }} 
-        />
-
         </Stack.Navigator>
     </NavigationContainer>
    );
