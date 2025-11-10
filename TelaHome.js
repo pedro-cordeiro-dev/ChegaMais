@@ -235,7 +235,7 @@ export default function TelaHome({ navigation }) {
           <Text style={[stylesHome.navText, { color: '#4B0082' }]}>Home</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={stylesHome.navItem} onPress={() => () => navigation.navigate('TelaExplorar')}>
+        <TouchableOpacity style={stylesHome.navItem} onPress={() => navigation.navigate('TelaExplorar')}>
           <MaterialIcons name="explore" size={24} color="#A9A9A9" />
           <Text style={stylesHome.navText}>Explorar</Text>
         </TouchableOpacity>

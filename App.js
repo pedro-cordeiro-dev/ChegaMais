@@ -10,7 +10,6 @@ import TelaHome from './TelaHome';
 import TelaPerfil from './Perfil';
 import TelaMudarSenha from './TelaMudarSenha';
 import TelaCadastrar from './TelaCadastrar';
-import TelaEsqueciSenha from './TelaEsqueciSenha';
 import TelaExplorar from './TelaExplorar';
 
 
