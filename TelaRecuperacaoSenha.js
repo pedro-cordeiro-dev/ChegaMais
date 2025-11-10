@@ -5,16 +5,12 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from './firebaseconfig'; 
-import { sendPasswordResetEmail, confirmPasswordReset } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import styles from './styles';
 
 export default function TelaRecuperacaoSenha({ navigation }) {
   const [email, setEmail] = useState('');
-  const [codigo, setCodigo] = useState('');       
-  const [novaSenha, setNovaSenha] = useState(''); 
-
   const [loadingSendCode, setLoadingSendCode] = useState(false);
-  const [loadingChangePass, setLoadingChangePass] = useState(false);
 
   const handleSendCode = async () => {
     if (!email.trim()) {
@@ -35,46 +31,16 @@ export default function TelaRecuperacaoSenha({ navigation }) {
       setLoadingSendCode(false);
       Alert.alert(
         'Email Enviado',
-        'Verifique seu email (e caixa de spam). Procure o código no link enviado e cole-o abaixo.'
-      );
-    } catch (error) {
-      setLoadingSendCode(false);
-      console.error(error);
-      let msg = 'Não foi possível enviar o email.';
-      if (error.code === 'auth/user-not-found') {
-        msg = 'Email não cadastrado.';
-      }
-      Alert.alert('Erro', msg);
-    }
-  };
-
-  const handleChangePassword = async () => {
-    if (!codigo.trim() || !novaSenha.trim()) {
-      Alert.alert('Erro', 'Preencha o código e a nova senha.');
-      return;
-    }
-    if (novaSenha.length < 6) {
-      Alert.alert('Erro', 'A nova senha deve ter pelo menos 6 caracteres.');
-      return;
-    }
-    
-    Keyboard.dismiss();
-    setLoadingChangePass(true);
-
-    try {
-      await confirmPasswordReset(auth, codigo, novaSenha);
-      setLoadingChangePass(false);
-      Alert.alert(
-        'Sucesso!',
-        'Sua senha foi redefinida. Você já pode fazer login.',
+        'Verifique seu email (e caixa de spam). Siga o link enviado para criar uma nova senha.',
         [{ text: 'OK', onPress: () => navigation.goBack() }]
       );
     } catch (error) {
-      setLoadingChangePass(false);
-      console.error(error);
-      let msg = 'Não foi possível redefinir a senha.';
-      if (error.code === 'auth/invalid-action-code') {
-        msg = 'Código inválido ou expirado. Peça um novo email.';
+      setLoadingSendCode(false);
+      console.error('Erro ao enviar email:', error);
+      console.log('Código do Erro:', error.code);
+      let msg = 'Não foi possível enviar o email.';
+      if (error.code === 'auth/user-not-found') {
+        msg = 'Email não cadastrado.';
       }
       Alert.alert('Erro', msg);
     }
@@ -99,68 +65,32 @@ export default function TelaRecuperacaoSenha({ navigation }) {
         <Text style={styles.titulo}>Chega+</Text>
         <Text style={styles.subtitulo}>Esqueceu sua senha?</Text>
         <Text style={styles.descricao}>
-          Envie o código para seu email, depois cole-o e defina a nova senha.
+          Digite seu email e enviaremos um link para você redefinir sua senha.
         </Text>
 
-        <View style={styles.inputContainerRow}>
-          <TextInput
-            style={styles.inputRow} 
-            placeholder="Email"
-            placeholderTextColor="#888"
-            keyboardType="email-address" 
-            autoCapitalize="none" 
-            value={email}
-            onChangeText={setEmail}
-            editable={!loadingSendCode && !loadingChangePass}
-          />
-          <TouchableOpacity 
-            style={[
-              styles.buttonRow, 
-              loadingSendCode && styles.buttonRowDisabled 
-            ]} 
-            onPress={handleSendCode} 
-            disabled={loadingSendCode}
-          >
-            {loadingSendCode ? (
-              <ActivityIndicator color="#FFF" size="small" />
-            ) : (
-              <Text style={styles.buttonRowText}>Enviar Código</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-
         <TextInput
           style={styles.input}
-          placeholder="Código de Verificação"
+          placeholder="Email"
           placeholderTextColor="#888"
+          keyboardType="email-address" 
           autoCapitalize="none" 
-          value={codigo}
-          onChangeText={setCodigo}
-          editable={!loadingChangePass}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Nova Senha (mín. 6 caracteres)"
-          placeholderTextColor="#888"
-          secureTextEntry
-          value={novaSenha}
-          onChangeText={setNovaSenha}
-          editable={!loadingChangePass}
+          value={email}
+          onChangeText={setEmail}
+          editable={!loadingSendCode}
         />
 
         <TouchableOpacity 
           style={[
             styles.botaoLogin,
-            loadingChangePass && styles.botaoLoginDesabilitado
+            loadingSendCode && styles.botaoLoginDesabilitado
           ]} 
-          onPress={handleChangePassword} 
-          disabled={loadingChangePass}
+          onPress={handleSendCode} 
+          disabled={loadingSendCode}
         >
-          {loadingChangePass ? (
+          {loadingSendCode ? (
             <ActivityIndicator color="#FFF" /> 
           ) : (
-            <Text style={styles.textoBotaoLogin}>Mudar Senha</Text>
+            <Text style={styles.textoBotaoLogin}>Enviar Link de Recuperação</Text>
           )}
         </TouchableOpacity>
 

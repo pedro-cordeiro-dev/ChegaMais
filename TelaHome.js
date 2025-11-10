@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, Image, TouchableOpacity,
+  View, Text, Image, TouchableOpacity,
   ScrollView, StatusBar, FlatList, ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { auth, db } from './firebaseconfig';
-import { doc, getDoc, collection, getDocs, query, orderBy, limit, where } from "firebase/firestore";
+import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 import stylesHome from './stylesHome';
 
@@ -16,7 +16,6 @@ const CATEGORIAS = [
   { id: 'comida', nome: 'Comida', icone: 'restaurant' },
   { id: 'esportes', nome: 'Esportes', icone: 'sports-soccer' },
   { id: 'compras', nome: 'Compras', icone: 'shopping-bag' },
-  { id: 'outro', nome: 'Outro', icone: 'apps' },
 ];
 
 const ItemCategoria = ({ nome, icone, isSelected, onPress }) => (
@@ -34,8 +33,8 @@ const ItemCategoria = ({ nome, icone, isSelected, onPress }) => (
   </TouchableOpacity>
 );
 
-const CardRecomendado = ({ item, style, ...props }) => (
-  <View style={[stylesHome.cardRecomendado, style]} {...props}>
+const CardRecomendado = ({ item, style, onPress, ...props }) => (
+  <TouchableOpacity style={[stylesHome.cardRecomendado, style]} onPress={onPress} {...props}>
     <Image source={{ uri: item.imageUrl }} style={stylesHome.cardRecomendadoImagem} />
     <View style={stylesHome.cardRecomendadoOverlay}>
       <Text style={stylesHome.cardRecomendadoNome}>{item.nome}</Text>
@@ -44,100 +43,98 @@ const CardRecomendado = ({ item, style, ...props }) => (
         <Text style={stylesHome.cardRecomendadoLocal}>{item.enderecoCompleto}</Text>
       </View>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
-const CardAvaliado = ({ item }) => (
-  <View style={stylesHome.cardAvaliado}>
+const CardAvaliado = ({ item, onPress }) => (
+  <TouchableOpacity style={stylesHome.cardAvaliado} onPress={onPress}>
     <Image source={{ uri: item.imageUrl }} style={stylesHome.cardAvaliadoImagem} />
     <View style={stylesHome.cardAvaliadoOverlay}>
       <MaterialIcons name="star" size={16} color="#FFD700" />
       <Text style={stylesHome.cardAvaliadoNome}>{item.nome}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 export default function TelaHome({ navigation }) {
-  const [textoPesquisa, setTextoPesquisa] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
   const [userName, setUserName] = useState('');
-
-  const [loading, setLoading] = useState(true);
   const [recomendados, setRecomendados] = useState([]);
   const [maisAvaliados, setMaisAvaliados] = useState([]);
+  const [maisComentados, setMaisComentados] = useState([]);
   const [dadosFiltrados, setDadosFiltrados] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingCarrossel, setLoadingCarrossel] = useState(true);
+  const [loadingFiltro, setLoadingFiltro] = useState(false);
 
   useEffect(() => {
     const fetchUserName = async () => {
+      setLoadingUser(true);
       try {
         const user = auth.currentUser;
         if (user) {
           const userDocRef = doc(db, "usuarios", user.uid);
           const userDocSnap = await getDoc(userDocRef);
-
           if (userDocSnap.exists()) {
-            const userData = userDocSnap.data();
-            setUserName(userData.nome);
-          } else {
-            console.log("Documento do usuário não encontrado!");
+            setUserName(userDocSnap.data().nome);
           }
         }
       } catch (error) {
         console.error("Erro ao buscar nome do usuário:", error);
       }
+      setLoadingUser(false);
     };
-
     fetchUserName();
   }, []);
 
   useEffect(() => {
-    const fetchDadosIniciais = async () => {
-      setLoading(true);
+    const fetchCarrosselData = async () => {
+      setLoadingCarrossel(true);
       try {
         const lazerCollection = collection(db, "lazer");
-
-        const qRecomendados = query(lazerCollection, orderBy("createdAt", "desc"), limit(5));
-        const recSnapshot = await getDocs(qRecomendados);
-        const recList = recSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setRecomendados(recList);
-
-        const qAvaliados = query(lazerCollection, orderBy("rating", "desc"), limit(5));
-        const avSnapshot = await getDocs(qAvaliados);
-        const avList = avSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setMaisAvaliados(avList);
+        const qRecomendados = query(lazerCollection, orderBy("createdAt", "desc"), limit(10));
+        const recomendadosSnap = await getDocs(qRecomendados);
+        setRecomendados(recomendadosSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const qAvaliados = query(lazerCollection, orderBy("rating", "desc"), limit(10));
+        const avaliadosSnap = await getDocs(qAvaliados);
+        setMaisAvaliados(avaliadosSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const qComentados = query(lazerCollection, orderBy("totalReviews", "desc"), limit(10));
+        const comentadosSnap = await getDocs(qComentados);
+        setMaisComentados(comentadosSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
       } catch (error) {
-        console.error("Erro ao buscar dados iniciais:", error);
+        console.error("Erro ao buscar dados dos carrosséis (VERIFIQUE OS ÍNDICES):", error);
       }
-      setLoading(false);
+      setLoadingCarrossel(false);
     };
 
-    fetchDadosIniciais();
+    fetchCarrosselData();
   }, []);
 
   useEffect(() => {
-    const fetchDadosFiltrados = async () => {
+    const fetchFilteredData = async () => {
       if (categoriaSelecionada === null) {
         setDadosFiltrados([]);
         return;
       }
-
-      setLoading(true);
+      
+      setLoadingFiltro(true);
       try {
-        const lazerCollection = collection(db, "lazer");
-        const qFiltrados = query(lazerCollection, where("categoria", "==", categoriaSelecionada));
-        const filtradosSnapshot = await getDocs(qFiltrados);
-        const filtradosList = filtradosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setDadosFiltrados(filtradosList);
+        const q = query(
+          collection(db, "lazer"),
+          where("categoria", "==", categoriaSelecionada),
+          orderBy("createdAt", "desc")
+        );
+        const querySnapshot = await getDocs(q);
+        setDadosFiltrados(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       } catch (error) {
-        console.error("Erro ao buscar dados filtrados:", error);
+        console.error("Erro ao filtrar dados (VERIFIQUE O ÍNDICE):", error);
       }
-      setLoading(false);
+      setLoadingFiltro(false);
     };
 
-    fetchDadosFiltrados();
+    fetchFilteredData();
   }, [categoriaSelecionada]);
-
 
   const handleCategoriaPress = (id) => {
     if (categoriaSelecionada === id) {
@@ -145,6 +142,10 @@ export default function TelaHome({ navigation }) {
     } else {
       setCategoriaSelecionada(id);
     }
+  };
+  
+  const handleLazerPress = (lazerId) => {
+    navigation.navigate('TelaExplorar', { lazerId });
   };
 
   const categoriaInfo = CATEGORIAS.find(cat => cat.id === categoriaSelecionada);
@@ -164,24 +165,13 @@ export default function TelaHome({ navigation }) {
               <View>
                 <Text style={stylesHome.logoTexto}>Chega+</Text>
                 <Text style={stylesHome.userName}>
-                  {userName ? userName.toUpperCase() : 'BEM-VINDO(A)'}
+                  {loadingUser ? 'Carregando...' : (userName ? userName.toUpperCase() : 'BEM-VINDO(A)')}
                 </Text>
               </View>
             </View>
             <TouchableOpacity style={stylesHome.notificacaoIcon}>
               <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
             </TouchableOpacity>
-          </View>
-
-          <View style={stylesHome.pesquisaBar}>
-            <MaterialIcons name="search" size={24} color="#751a65" />
-            <TextInput
-              style={stylesHome.pesquisaInput}
-              placeholder="Pesquisar"
-              placeholderTextColor="#751a65"
-              value={textoPesquisa}
-              onChangeText={setTextoPesquisa}
-            />
           </View>
 
           <FlatList
@@ -200,22 +190,23 @@ export default function TelaHome({ navigation }) {
             contentContainerStyle={stylesHome.categoriasList} />
         </LinearGradient>
 
-        {loading ? (
-          <ActivityIndicator size="large" color="#4B0082" style={{ marginTop: 50 }} />
-        ) : (
+        {categoriaSelecionada === null ? (
           <>
-            {categoriaSelecionada === null ? (
+            {loadingCarrossel ? (
+              <ActivityIndicator size="large" color="#4B0082" style={{ marginTop: 20 }}/>
+            ) : (
               <>
                 <View style={stylesHome.sessaoRecomendados}>
                   <Text style={stylesHome.sessaoRecomendadosTitulo}>Recomendados</Text>
                   <FlatList
                     data={recomendados}
-                    renderItem={({ item }) => <CardRecomendado item={item} />}
+                    renderItem={({ item }) => (
+                      <CardRecomendado item={item} onPress={() => handleLazerPress(item.id)} />
+                    )}
                     keyExtractor={item => item.id}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={stylesHome.horizontalListContent}
-                    ListEmptyComponent={<Text style={{ color: '#999', marginLeft: 15 }}>Nenhum item recomendado.</Text>}
+                    contentContainerStyle={stylesHome.horizontalListContent} 
                   />
                 </View>
 
@@ -223,38 +214,58 @@ export default function TelaHome({ navigation }) {
                   <Text style={stylesHome.sessaoRecomendadosTitulo}>Mais Avaliados</Text>
                   <FlatList
                     data={maisAvaliados}
-                    renderItem={({ item }) => <CardAvaliado item={item} />}
+                    renderItem={({ item }) => (
+                      <CardAvaliado item={item} onPress={() => handleLazerPress(item.id)} />
+                    )}
                     keyExtractor={item => item.id}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={stylesHome.horizontalListContent}
-                    ListEmptyComponent={<Text style={{ color: '#999', marginLeft: 15 }}>Nenhum item avaliado.</Text>}
+                  />
+                </View>
+                
+                <View style={stylesHome.sessaoRecomendados}>
+                  <Text style={stylesHome.sessaoRecomendadosTitulo}>Mais Comentados</Text>
+                  <FlatList
+                    data={maisComentados}
+                    renderItem={({ item }) => (
+                      <CardAvaliado item={item} onPress={() => handleLazerPress(item.id)} />
+                    )}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={stylesHome.horizontalListContent}
                   />
                 </View>
               </>
-            ) : (
-              <View style={stylesHome.sessaoRecomendados}>
-                <Text style={stylesHome.sessaoRecomendadosTitulo}>
-                  {categoriaInfo?.nome || 'Resultados'}
-                </Text>
-                <View style={{ paddingHorizontal: 20 }}>
-                  {dadosFiltrados.length > 0 ? (
-                    dadosFiltrados.map(item => (
-                      <CardRecomendado
-                        key={item.id}
-                        item={item}
-                        style={{ width: '100%', marginRight: 0, marginBottom: 15 }}
-                      />
-                    ))
-                  ) : (
-                    <View style={{ marginTop: 10 }}>
-                      <Text style={{ color: '#999' }}>Nenhum item encontrado para esta categoria.</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
             )}
           </>
+        ) : (
+          <View style={stylesHome.sessaoRecomendados}>
+            <Text style={stylesHome.sessaoRecomendadosTitulo}>
+              {categoriaInfo?.nome || 'Resultados'}
+            </Text>
+            {loadingFiltro ? (
+              <ActivityIndicator size="large" color="#4B0082" style={{ marginTop: 20 }}/>
+            ) : (
+              <View style={{ paddingHorizontal: 20 }}>
+                {dadosFiltrados.length > 0 ? (
+                  dadosFiltrados.map(item => (
+                    <CardRecomendado
+                      key={item.id}
+                      item={item}
+                      style={{ width: '100%', marginRight: 0, marginBottom: 15 }}
+                      onPress={() => handleLazerPress(item.id)}
+                    />
+                  ))
+                ) : (
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={{ color: '#999' }}>Nenhum item encontrado para esta categoria.</Text>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
         )}
 
         <View style={{ height: 10 }} />

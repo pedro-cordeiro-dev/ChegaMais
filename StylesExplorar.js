@@ -219,6 +219,19 @@ const styles = StyleSheet.create({
     color: '#555',
     lineHeight: 18,
   },
+
+  emptyListContainer: {
+    width: width * 0.8,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+  },
+  emptyListText: {
+    color: '#888',
+    fontSize: 16,
+    textAlign: 'center',
+  },
 });
 
 export default styles;
