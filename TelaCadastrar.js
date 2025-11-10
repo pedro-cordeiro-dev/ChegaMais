@@ -7,14 +7,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-// Importações do Firebase
 import { auth, db } from './firebaseconfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-// Importação do Image Picker
 import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import styles from './stylesCadastrar'; // Seus estilos
+import styles from './stylesCadastrar';
 
 const TelaCadastrar = ({ navigation }) => {
   const [nome, setNome] = useState('');
@@ -22,14 +21,19 @@ const TelaCadastrar = ({ navigation }) => {
   const [numero, setNumero] = useState('');
   const [bairro, setBairro] = useState('');
   const [categoria, setCategoria] = useState(null);
-  const [horarioInicio, setHorarioInicio] = useState('');
-  const [horarioFim, setHorarioFim] = useState('');
   const diasDaSemana = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
   const [diasSelecionados, setDiasSelecionados] = useState([]);
-
-  // Novos estados para imagem e carregamento
+  
   const [imageUri, setImageUri] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [horarioInicio, setHorarioInicio] = useState('');
+  const [horarioFim, setHorarioFim] = useState('');
+  const [dateInicio, setDateInicio] = useState(new Date());
+  const [dateFim, setDateFim] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+  const [currentPickerTarget, setCurrentPickerTarget] = useState(null);
+
 
   const toggleDia = (diaIndex) => {
     if (diasSelecionados.includes(diaIndex)) {
@@ -41,9 +45,7 @@ const TelaCadastrar = ({ navigation }) => {
     }
   };
 
-  // Função para escolher imagem
   const handleImagePick = async () => {
-    // Pedir permissão
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       console.error('Permissão para acessar a galeria foi negada');
@@ -54,7 +56,7 @@ const TelaCadastrar = ({ navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.7, // Qualidade reduzida para upload mais rápido
+      quality: 0.7,
     });
 
     if (!result.canceled) {
@@ -62,7 +64,6 @@ const TelaCadastrar = ({ navigation }) => {
     }
   };
 
-  // Função para fazer o upload da imagem e retornar a URL
   const uploadImage = async (uri) => {
     const user = auth.currentUser;
     if (!uri || !user) return null;
@@ -71,15 +72,11 @@ const TelaCadastrar = ({ navigation }) => {
       const response = await fetch(uri);
       const blob = await response.blob();
       
-      // Criar um nome de arquivo único
       const filename = `lazer/${user.uid}/${Date.now()}`;
       const storage = getStorage();
       const storageRef = ref(storage, filename);
 
-      // Fazer o upload
       await uploadBytes(storageRef, blob);
-
-      // Obter a URL de download
       const downloadURL = await getDownloadURL(storageRef);
       return downloadURL;
 
@@ -89,14 +86,12 @@ const TelaCadastrar = ({ navigation }) => {
     }
   };
 
-  // Função para cadastrar
   const handleCadastrar = async () => {
-    if (isLoading) return; // Evita cliques duplos
+    if (isLoading) return;
     setIsLoading(true);
 
     const user = auth.currentUser;
 
-    // Validação
     if (!nome || !endereco || !categoria || !imageUri || !user) {
       console.error("Por favor, preencha todos os campos e adicione uma imagem.");
       setIsLoading(false);
@@ -104,13 +99,11 @@ const TelaCadastrar = ({ navigation }) => {
     }
 
     try {
-      // 1. Fazer upload da imagem
       const imageUrl = await uploadImage(imageUri);
       if (!imageUrl) {
         throw new Error("Falha no upload da imagem.");
       }
 
-      // 2. Preparar os dados para salvar
       const lazerData = {
         nome,
         endereco,
@@ -121,27 +114,21 @@ const TelaCadastrar = ({ navigation }) => {
         horarioInicio,
         horarioFim,
         horarioFuncionamento: `${horarioInicio} AS ${horarioFim}`,
-        diasFuncionamento: diasSelecionados, // Salva o array de índices [0, 1, 2, ...]
+        diasFuncionamento: diasSelecionados,
         imageUrl,
-        
-        // Dados de auditoria
         postedBy: user.uid,
-        postedByName: user.displayName || 'Usuário Anônimo', // Pega o nome do usuário logado
+        postedByName: user.displayName || 'Usuário Anônimo',
         createdAt: serverTimestamp(),
-
-        // Dados para avaliações futuras
         rating: 0,
         totalReviews: 0,
       };
 
-      // 3. Salvar no Firestore
       const lazerCollection = collection(db, "lazer");
       await addDoc(lazerCollection, lazerData);
 
       console.log("Área de lazer cadastrada com sucesso!");
       setIsLoading(false);
 
-      // 4. Limpar o formulário e navegar
       setNome('');
       setEndereco('');
       setNumero('');
@@ -158,6 +145,34 @@ const TelaCadastrar = ({ navigation }) => {
       console.error("Erro ao cadastrar lazer:", error);
       setIsLoading(false);
     }
+  };
+
+  const onChangeTime = (event, selectedDate) => {
+    setShowPicker(false);
+
+    if (event.type === 'dismissed') {
+      return;
+    }
+
+    if (selectedDate) {
+      const formattedTime = selectedDate.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      if (currentPickerTarget === 'inicio') {
+        setDateInicio(selectedDate);
+        setHorarioInicio(formattedTime);
+      } else {
+        setDateFim(selectedDate);
+        setHorarioFim(formattedTime);
+      }
+    }
+  };
+
+  const showTimepicker = (target) => {
+    setCurrentPickerTarget(target);
+    setShowPicker(true);
   };
 
 
@@ -179,16 +194,11 @@ const TelaCadastrar = ({ navigation }) => {
           </LinearGradient>
 
           <View style={styles.formContainer}>
-            {/* Campo de Imagem Atualizado */}
             <TouchableOpacity style={styles.imagePlaceholder} onPress={handleImagePick}>
               {imageUri ? (
                 <Image source={{ uri: imageUri }} style={styles.previewImage} />
               ) : (
-                <MaterialCommunityIcons
-                  name="image-plus"
-                  size={50}
-                  style={styles.icon}
-                />
+                <MaterialCommunityIcons name="image-plus" size={50} style={styles.icon} />
               )}
             </TouchableOpacity>
 
@@ -200,39 +210,19 @@ const TelaCadastrar = ({ navigation }) => {
               placeholder="Nome do local"
               placeholderTextColor="#888"
             />
-
+            
             <View style={styles.row}>
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>ENDEREÇO</Text>
-                <TextInput
-                  style={styles.input}
-                  value={endereco}
-                  onChangeText={setEndereco}
-                  placeholder="Endereço"
-                  placeholderTextColor="#888"
-                />
+                <TextInput style={styles.input} value={endereco} onChangeText={setEndereco} placeholder="Endereço" placeholderTextColor="#888" />
               </View>
               <View style={styles.inputGroupSmall}>
                 <Text style={styles.label}>NÚMERO</Text>
-                <TextInput
-                  style={styles.input}
-                  value={numero}
-                  onChangeText={setNumero}
-                  keyboardType="numeric"
-                  placeholder="Nº"
-                  placeholderTextColor="#888"
-                />
+                <TextInput style={styles.input} value={numero} onChangeText={setNumero} keyboardType="numeric" placeholder="Nº" placeholderTextColor="#888" />
               </View>
             </View>
-
             <Text style={styles.label}>BAIRRO</Text>
-            <TextInput
-              style={styles.input}
-              value={bairro}
-              onChangeText={setBairro}
-              placeholder="Bairro do local"
-              placeholderTextColor="#888"
-            />
+            <TextInput style={styles.input} value={bairro} onChangeText={setBairro} placeholder="Bairro do local" placeholderTextColor="#888" />
 
             <Text style={styles.label}>CATEGORIA</Text>
             <View style={styles.pickerContainer}>
@@ -253,21 +243,25 @@ const TelaCadastrar = ({ navigation }) => {
 
             <Text style={styles.label}>HORÁRIO DE FUNCIONAMENTO</Text>
             <View style={styles.timeContainer}>
-              <TextInput
+              <TouchableOpacity
                 style={[styles.input, styles.timeInput]}
-                value={horarioInicio}
-                onChangeText={setHorarioInicio}
-                placeholder="08:00"
-                placeholderTextColor="#888"
-              />
+                onPress={() => showTimepicker('inicio')}
+              >
+                <Text style={styles.timeInputText}>
+                  {horarioInicio || "Início"}
+                </Text>
+              </TouchableOpacity>
+              
               <Text style={styles.timeSeparator}>AS</Text>
-              <TextInput
+              
+              <TouchableOpacity
                 style={[styles.input, styles.timeInput]}
-                value={horarioFim}
-                onChangeText={setHorarioFim}
-                placeholder="18:00"
-                placeholderTextColor="#888"
-              />
+                onPress={() => showTimepicker('fim')}
+              >
+                <Text style={styles.timeInputText}>
+                  {horarioFim || "Fim"}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.diasContainer}>
@@ -276,18 +270,10 @@ const TelaCadastrar = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     key={index}
-                    style={[
-                      styles.diaButton,
-                      isSelected && styles.diaButtonSelected,
-                    ]}
+                    style={[ styles.diaButton, isSelected && styles.diaButtonSelected ]}
                     onPress={() => toggleDia(index)}
                   >
-                    <Text
-                      style={[
-                        styles.diaText,
-                        isSelected && styles.diaSelecionado,
-                      ]}
-                    >
+                    <Text style={[ styles.diaText, isSelected && styles.diaSelecionado ]}>
                       {dia}
                     </Text>
                   </TouchableOpacity>
@@ -295,7 +281,6 @@ const TelaCadastrar = ({ navigation }) => {
               })}
             </View>
 
-            {/* Botão de Cadastro Atualizado */}
             <TouchableOpacity 
               style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
               onPress={handleCadastrar}
@@ -311,23 +296,30 @@ const TelaCadastrar = ({ navigation }) => {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* Menu de Navegação */}
+      {showPicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={currentPickerTarget === 'inicio' ? dateInicio : dateFim}
+          mode={'time'}
+          is24Hour={true}
+          display="default" 
+          onChange={onChangeTime}
+        />
+      )}
+
       <View style={styles.botaoNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('TelaHome')}>
           <MaterialIcons name="home" size={24} color="#A9A9A9" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('TelaExplorar')}>
           <MaterialIcons name="explore" size={24} color="#A9A9A9" />
           <Text style={styles.navText}>Explorar</Text>
         </TouchableOpacity>
-        
         <TouchableOpacity style={styles.navItem} onPress={() => {}}>
           <MaterialIcons name="add-circle" size={24} color="#4B0082" />
           <Text style={[styles.navText, { color: '#4B0082' }]}>Cadastrar</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Perfil')}>
           <MaterialIcons name="person" size={24} color="#A9A9AA" />
           <Text style={styles.navText}>Perfil</Text>
@@ -336,4 +328,5 @@ const TelaCadastrar = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 export default TelaCadastrar;

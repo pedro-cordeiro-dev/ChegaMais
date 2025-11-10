@@ -1,13 +1,11 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-// Pega a largura da tela para os cálculos de estilo
 const { width } = Dimensions.get('window');
 
-// === ESTILOS ESPECÍFICOS PARA A TELA EXPLORAR ===
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Fundo branco como pedido
+    backgroundColor: '#FFFFFF',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -21,18 +19,15 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   carouselContainer: {
-    flex: 1, // Ocupa o espaço restante
+    flex: 1,
     justifyContent: 'center',
-    // O alinhamento 'center' é bom se o carrossel for a única coisa
   },
   lazerCard: {
-    width: width * 0.85, // Card ocupa 85% da largura da tela
+    width: width * 0.85,
     backgroundColor: '#FFFFFF',
     borderRadius: 15,
-    marginHorizontal: 10, // Espaçamento entre os cards
-    // Sombra (para Android)
+    marginHorizontal: 10,
     elevation: 8,
-    // Sombra (para iOS)
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -40,7 +35,7 @@ const styles = StyleSheet.create({
   },
   lazerImage: {
     width: '100%',
-    height: 200, // Altura da imagem
+    height: 200,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -48,7 +43,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 15,
     left: 15,
-    backgroundColor: 'rgba(46, 204, 113, 0.9)', // Um verde bonito, como no protótipo
+    backgroundColor: 'rgba(46, 204, 113, 0.9)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 7,
@@ -78,12 +73,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   statusOpen: {
-    color: '#2ECC71', // Verde
+    color: '#2ECC71',
     fontWeight: 'bold',
     fontSize: 14,
   },
   statusClosed: {
-    color: '#E74C3C', // Vermelho
+    color: '#E74C3C',
     fontWeight: 'bold',
     fontSize: 14,
   },
@@ -101,10 +96,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: '#555',
     fontSize: 14,
-    flexShrink: 1, // Garante que o texto quebre se for muito longo
+    flexShrink: 1,
   },
   comoChegarButton: {
-    backgroundColor: '#4B0082', // Roxo principal do app
+    backgroundColor: '#4B0082',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

@@ -152,6 +152,10 @@ const styles = StyleSheet.create({
     color: '#A9A9A9',
     marginTop: 2,
   },
+  timeInputText: {
+  color: '#333',
+  fontSize: 16,
+},
 });
 
 export default styles;
